@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".SSOSessionActivity"
+        android:background="@color/colorPrimaryDark">
+
+        <TextView
+            android:id="@+id/titleScreen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/quicksand_bold"
+            android:text="@string/app_name"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="100dp"
+            android:padding="15dp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/titleSSO"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="15"
+            android:textSize="15sp"
+            android:padding="15dp"
+            android:textColor="@android:color/white"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:fontFamily="@font/quicksand_light"
+            android:inputType="textPersonName"
+            android:text="@string/subtitle_sso"
+            android:layout_below="@id/titleScreen"/>
+
+        <EditText
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:fontFamily="@font/quicksand_regular"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:hint="@string/username"
+            android:layout_below="@id/titleSSO"
+            android:textAlignment="center"
+            android:background="@drawable/border_radius"
+            android:textColor="@color/colorPrimaryDark"
+            android:padding="10dp" />
+
+        <EditText
+            android:id="@+id/password"
+            android:fontFamily="@font/quicksand_regular"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:textAlignment="center"
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:padding="10dp"
+            android:hint="@string/password"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_below="@id/username"
+            android:inputType="textPassword"
+            android:background="@drawable/border_radius"
+            android:textColor="@color/colorPrimaryDark"
+            />
+
+        <Button
+            android:id="@+id/enter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/enter"
+            android:fontFamily="@font/quicksand_bold"
+            android:textSize="12sp"
+            android:ems="10"
+            android:padding="10dp"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_below="@id/password"
+            android:textAlignment="center"
+            android:background="@drawable/border_radius_primary_color"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="15dp"
+            android:layout_below="@id/enter"
+            android:gravity="center_horizontal">
+            <ImageView
+                android:id="@+id/facebook"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:src="@drawable/facebook" />
+
+            <ImageView
+                android:id="@+id/google"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:src="@drawable/google"/>
+        </LinearLayout>
+
+
+    </RelativeLayout>
+</ScrollView>
