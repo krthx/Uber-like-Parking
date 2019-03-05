@@ -8,5 +8,5 @@
     android:background="@color/colorPrimary"
     android:paddingTop="@dimen/toolbar_top_padding"
     app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
     />

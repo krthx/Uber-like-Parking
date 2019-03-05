@@ -20,4 +20,8 @@
     <string name="close_session">Cerrar sesión</string>
     <string name="drawer_open">Abrir</string>
     <string name="drawer_close">Cerrar</string>
+    <string name="support">Centro de Ayuda</string>
+    <string name="support_description">Esta aplicación fue desarrollada para brindar soporte a los automovilistas que se desplazan por la ciudad y buscan una alternativa para el ahorro de gastos evitando parqueos con precios elevados.</string>
+    <string name="version">v1.0.0</string>
+    <string name="GOOGLE_MAPS_API_KEY">AIzaSyCy48pZLAkb2VQiBe3ZB3mdeNxODNiPo8o</string>
 </resources>

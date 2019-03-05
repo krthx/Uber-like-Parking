@@ -24,12 +24,10 @@ public class NavigationDrawerFragment extends Fragment {
     private RecyclerView.LayoutManager ManejadorLayout;
     private FragmentDrawerListener myDrawerListener;
     private View contenedor;
-    //ManejadorSQLite manejador;
 
-    private int Iconos[] = {R.drawable.ic_menu_camera, R.drawable.ic_menu_camera, R.drawable.ic_menu_camera, R.drawable.ic_menu_camera};
-    private String Titulos[] = {"", "", "", ""};
-    private String nombre;
-    private String correo;
+    private int Iconos[] = { R.drawable.credit_card, R.drawable.history, R.drawable.question, R.drawable.logoff };
+    private String Titulos[] = {"Pagos", "Historial", "Ayuda", "Cerrar Sesión"};
+
     private int picture = R.mipmap.ic_launcher;
 
     public NavigationDrawerFragment() {}
@@ -38,18 +36,13 @@ public class NavigationDrawerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View vista = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
 
-        //manejador= new ManejadorSQLite(getActivity());
-
-        /*nombre = manejador.getAutenticado().getNombre().toString();
-        correo = manejador.getAutenticado().getCorreo().toString();*/
-
         mRecyclerView = (RecyclerView) vista.findViewById(R.id.RecyclerView);
         mRecyclerView.setHasFixedSize(true);
 
         ManejadorLayout = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(ManejadorLayout);
 
-        Adaptador = new NavigationDrawerAdapter(Titulos, Iconos, nombre, correo, picture);
+        Adaptador = new NavigationDrawerAdapter(Titulos, Iconos, "", "", picture);
 
         mRecyclerView.setAdapter(Adaptador);
         mRecyclerView.addOnItemTouchListener(new RecyclerItemOnClickListener(getActivity(), new RecyclerItemOnClickListener.OnItemClickListener() {

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HelpFragment">
+
+    <LinearLayout
+        android:id="@+id/content1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="20dp">
+        <ImageView
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:src="@drawable/help_icon"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_below="@id/content1"
+        android:id="@+id/titleSupport"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:textAlignment="center"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/quicksand_bold"
+        android:textSize="25sp"
+        android:text="@string/support" />
+
+    <TextView
+        android:layout_below="@id/titleSupport"
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:ems="10"
+        android:layout_margin="20dp"
+        android:fontFamily="@font/quicksand_regular"
+        android:text="@string/support_description" />
+
+    <TextView
+        android:id="@+id/editText3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="8"
+        android:fontFamily="@font/quicksand_regular"
+        android:layout_alignParentBottom="true"
+        android:inputType="textPersonName"
+        android:text="@string/version"
+        android:textAlignment="center"/>
+
+</RelativeLayout>
