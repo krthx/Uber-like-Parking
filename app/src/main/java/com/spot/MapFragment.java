@@ -1,26 +1,14 @@
-package com.parking;
+package com.spot;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.graphics.Camera;
-import android.location.Location;
-import android.net.Uri;
-import android.os.Build;
+import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -30,11 +18,12 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.MapStyleOptions;
 
 public class MapFragment extends Fragment
         implements OnMapReadyCallback {
+
+    private static final String TAG = MapFragment.class.getSimpleName();
 
     private static final int REQUEST_CODE = 123;
     private GoogleMap mGoogleMap;
@@ -90,9 +79,24 @@ public class MapFragment extends Fragment
         MapsInitializer.initialize(getContext());
 
         mGoogleMap = googleMap;
-        //googleMap.setMapType(GoogleMap.);
 
-        googleMap.addMarker(new MarkerOptions().position(GUATEMALA));
+        googleMap.setMyLocationEnabled(false);
+        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+        googleMap.getUiSettings().setCompassEnabled(false);
+
+        try {
+            boolean success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            getContext(), R.raw.style_json));
+
+            if (!success) {
+                Log.e(TAG, "Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e(TAG, "Can't find style. Error: ", e);
+        }
+
+        //googleMap.addMarker(new MarkerOptions().position(GUATEMALA));
 
         CameraPosition l = CameraPosition.builder()
                 .target(GUATEMALA)

@@ -10,7 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/ContainerLayout">
-        <LinearLayout
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/Contenedor">
+        </RelativeLayout>
+        <RelativeLayout
             android:id="@+id/LayoutTootbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -21,12 +27,6 @@
             <include android:id="@+id/toolbar"
                 layout="@layout/toolbar"></include>
 
-        </LinearLayout>
-        <RelativeLayout
-            android:layout_below="@+id/LayoutTootbar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/Contenedor">
         </RelativeLayout>
     </RelativeLayout>
     <fragment
@@ -35,6 +35,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:layout="@layout/fragment_navigation_drawer"
-        android:name="com.parking.NavigationDrawerFragment"
+        android:name="com.spot.NavigationDrawerFragment"
         tools:layout="@layout/fragment_navigation_drawer" />
 </android.support.v4.widget.DrawerLayout>

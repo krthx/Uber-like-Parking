@@ -1,4 +1,4 @@
-package com.parking;
+package com.spot;
 
 import org.junit.Test;
 

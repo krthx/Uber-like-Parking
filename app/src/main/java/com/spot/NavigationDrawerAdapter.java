@@ -1,4 +1,4 @@
-package com.parking;
+package com.spot;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

@@ -5,8 +5,9 @@
     android:layout_height="wrap_content"
     android:id="@+id/toolbar"
     android:minHeight="?attr/actionBarSize"
-    android:background="@color/colorPrimary"
+    android:background="@android:color/transparent"
+
     android:paddingTop="@dimen/toolbar_top_padding"
-    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-    app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
+    app:theme="@style/ToolbarColoredBackArrow"
+    app:popupTheme="@style/ToolbarColoredBackArrow"
     />

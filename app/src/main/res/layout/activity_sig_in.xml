@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SigInActivity"
+    android:layout_gravity="center_horizontal"
+    android:gravity="center_horizontal">
+
+
+    <RelativeLayout
+        android:layout_marginTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/hand"
+        android:gravity="center_horizontal">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="200dp"
+            android:src="@drawable/hand_signin"
+            android:foregroundGravity="center_horizontal"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/subSignin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="15"
+        android:textSize="15sp"
+        android:padding="15dp"
+        android:textColor="@android:color/black"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:textAlignment="center"
+        android:fontFamily="@font/quicksand_light"
+        android:inputType="textPersonName"
+        android:text="@string/enroll"
+        android:layout_below="@id/hand"/>
+
+
+    <EditText
+        android:id="@+id/displayName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lines="1"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:fontFamily="@font/quicksand_regular"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:hint="@string/username"
+        android:layout_below="@id/subSignin"
+        android:textAlignment="center"
+        android:background="@drawable/border_radius"
+        android:textColor="@android:color/black"
+        android:padding="10dp" />
+
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lines="1"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:fontFamily="@font/quicksand_regular"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:hint="@string/username"
+        android:layout_below="@id/displayName"
+        android:textAlignment="center"
+        android:background="@drawable/border_radius"
+        android:textColor="@android:color/black"
+        android:padding="10dp" />
+
+    <EditText
+        android:id="@+id/password"
+        android:fontFamily="@font/quicksand_regular"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lines="1"
+        android:textAlignment="center"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:padding="10dp"
+        android:hint="@string/password"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_below="@id/username"
+        android:inputType="textPassword"
+        android:background="@drawable/border_radius"
+        android:textColor="@color/colorPrimaryDark"
+        />
+
+    <Button
+        android:id="@+id/create"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/enter"
+        android:fontFamily="@font/quicksand_bold"
+        android:textSize="12sp"
+        android:ems="10"
+        android:padding="10dp"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_below="@id/password"
+        android:textAlignment="center"
+        android:background="@drawable/border_radius_primary_color"/>
+
+</RelativeLayout>

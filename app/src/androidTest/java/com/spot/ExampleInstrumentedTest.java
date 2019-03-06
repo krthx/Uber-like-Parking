@@ -1,4 +1,4 @@
-package com.parking;
+package com.spot;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
