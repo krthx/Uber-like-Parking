@@ -1,11 +1,19 @@
 package com.spot;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 public class NavigationDrawerAdapter  extends RecyclerView.Adapter<NavigationDrawerAdapter.ViewHolder> {
 
@@ -54,6 +62,7 @@ public class NavigationDrawerAdapter  extends RecyclerView.Adapter<NavigationDra
         }else if(viewType == THEADER){
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.navigation_drawer_header, parent, false);
             ViewHolder vhItem = new ViewHolder(v, viewType);
+
             return vhItem;
         }
 
@@ -70,6 +79,18 @@ public class NavigationDrawerAdapter  extends RecyclerView.Adapter<NavigationDra
             holder.profile.setImageResource(profile);
             holder.Name.setText(name);
             holder.Email.setText(email);
+
+
+            if(SSOSessionActivity.userLogged != null && SSOSessionActivity.userLogged.getEmail() != null) {
+                holder.Name.setText(SSOSessionActivity.userLogged.getDisplayName());
+                holder.Email.setText(SSOSessionActivity.userLogged.getEmail());
+
+                Picasso.get()
+                        .load(SSOSessionActivity.userLogged.getPhotoUrl())
+                        .resize(100, 100)
+                        .centerCrop()
+                        .into(holder.profile);
+            }
         }
     }
 

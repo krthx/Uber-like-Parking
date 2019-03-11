@@ -1,5 +1,6 @@
 package com.spot;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -46,7 +47,7 @@ public class SSOSessionActivity extends AppCompatActivity {
     GoogleSignInClient mGoogleSignInClient;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ssosession);
 
@@ -55,7 +56,7 @@ public class SSOSessionActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestIdToken(getString(R.string.firebase_key_id))
                 .requestEmail()
                 .build();
 
@@ -69,30 +70,40 @@ public class SSOSessionActivity extends AppCompatActivity {
         btnEnter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAuth.signInWithEmailAndPassword(user.getText().toString(), password.getText().toString())
-                        .addOnCompleteListener(SSOSessionActivity.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    // Sign in success, update UI with the signed-in user's information
-                                    Log.d(TAG, "signInWithEmail:success");
-                                    FirebaseUser user = mAuth.getCurrentUser();
+                if(user.getText() != null && password.getText() != null) {
 
-                                    SSOSessionActivity.userLogged = user;
-                                    Intent home = new Intent(SSOSessionActivity.this, HomeActivity.class);
+                    final ProgressDialog progressDialog = new ProgressDialog(SSOSessionActivity.this);
+                    progressDialog.setTitle("Iniciando...");
+                    progressDialog.show();
 
-                                    startActivity(home);
-                                } else {
-                                    // If sign in fails, display a message to the user.
-                                    Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                    Toast.makeText(SSOSessionActivity.this, "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
-                                    //updateUI(null);
+                    mAuth.signInWithEmailAndPassword(user.getText().toString(), password.getText().toString())
+                            .addOnCompleteListener(SSOSessionActivity.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        // Sign in success, update UI with the signed-in user's information
+                                        Log.d(TAG, "signInWithEmail:success");
+
+                                        SSOSessionActivity.userLogged = mAuth.getCurrentUser();
+
+                                        Intent home = new Intent(SSOSessionActivity.this, HomeActivity.class);
+
+                                        startActivity(home);
+                                    } else {
+                                        // If sign in fails, display a message to the user.
+                                        Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                        Toast.makeText(SSOSessionActivity.this, "Authentication failed.",
+                                                Toast.LENGTH_SHORT).show();
+                                        //updateUI(null);
+                                    }
+
+                                    // ...
                                 }
-
-                                // ...
-                            }
-                        });
+                            });
+                }else {
+                    Toast.makeText(SSOSessionActivity.this, "Debe ingresar Credenciales .",
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -118,7 +129,9 @@ public class SSOSessionActivity extends AppCompatActivity {
 
                 startActivity(signin);
 
-                finish();
+                user.setText("");
+                password.setText("");
+                //finish();
 
             }
         });
@@ -141,51 +154,4 @@ public class SSOSessionActivity extends AppCompatActivity {
         userLogged = currentUser;
     }
 
-    /*public void createUser(String _user, String _password) {
-        mAuth.createUserWithEmailAndPassword(_user, _password)
-        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "createUserWithEmail:success");
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    updateUI(user);
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                    Toast.makeText(SSOSessionActivity.this, "Authentication failed.",
-                            Toast.LENGTH_SHORT).show();
-                    updateUI(null);
-                }
-            }
-        });
-    }*/
-
-    public void userInfo() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            // Name, email address, and profile photo Url
-            String name = user.getDisplayName();
-            String email = user.getEmail();
-            Uri photoUrl = user.getPhotoUrl();
-
-            // Check if user's email is verified
-            boolean emailVerified = user.isEmailVerified();
-
-            // The user's ID, unique to the Firebase project. Do NOT use this value to
-            // authenticate with your backend server, if you have one. Use
-            // FirebaseUser.getIdToken() instead.
-            String uid = user.getUid();
-        }
-    }
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
-    }
 }

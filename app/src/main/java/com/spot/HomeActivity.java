@@ -3,6 +3,7 @@ package com.spot;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -16,7 +17,10 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 public class HomeActivity extends AppCompatActivity  implements NavigationDrawerFragment.FragmentDrawerListener {
 
@@ -24,13 +28,14 @@ public class HomeActivity extends AppCompatActivity  implements NavigationDrawer
     private static final int PERMS_REQUEST_CODE = 123;
 
     private static final int REQUEST = 112;
-
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        mAuth = FirebaseAuth.getInstance();
 
         mToolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -80,7 +85,12 @@ public class HomeActivity extends AppCompatActivity  implements NavigationDrawer
                 title ="Ayuda";
                 break;
             case 4:
-                finish();
+                mAuth.signOut();
+                SSOSessionActivity.userLogged = null;
+
+                Intent login = new Intent(HomeActivity.this, SSOSessionActivity.class);
+
+                startActivity(login);
                 break;
             default:
                 break;
