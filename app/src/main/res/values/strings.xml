@@ -31,4 +31,6 @@
     <string name="upload">Agregar foto</string>
     <string name="default_user">lh@gmail.com</string>
     <string name="default_pass">ltsbrth</string>
+    <string name="facebook_app_id">2078440735537900</string>
+    <string name="fb_login_protocol_scheme">fb2078440735537900</string>
 </resources>

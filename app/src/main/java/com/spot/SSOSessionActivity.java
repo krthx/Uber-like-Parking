@@ -15,6 +15,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -25,6 +32,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -36,19 +44,27 @@ public class SSOSessionActivity extends AppCompatActivity {
     EditText user;
     EditText password;
 
-    ImageView facebookBtn;
+
+    //ImageView facebookBtn;
     ImageView googleBtn;
 
     TextView titleSignUp;
 
     private FirebaseAuth mAuth;
     static FirebaseUser userLogged;
+    static boolean facebookAuthentication = false;
 
     GoogleSignInClient mGoogleSignInClient;
+
+
+    CallbackManager callbackManager;
+    LoginButton facebookBtn;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext());
+
         setContentView(R.layout.activity_ssosession);
 
         FirebaseApp.initializeApp(this);
@@ -110,11 +126,42 @@ public class SSOSessionActivity extends AppCompatActivity {
         user = findViewById(R.id.username);
         password= findViewById(R.id.password);
 
-        facebookBtn = findViewById(R.id.facebook);
+        /*facebookBtn = findViewById(R.id.facebook);
         facebookBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //signIn();
 
+                Intent facebook = new Intent(SSOSessionActivity.this, FacebookSSOActivity.class);
+
+                startActivity(facebook);
+
+                user.setText("");
+                password.setText("");
+                //finish();
+
+            }
+        });*/
+
+        callbackManager = CallbackManager.Factory.create();
+
+        facebookBtn = findViewById(R.id.login_button);
+        facebookBtn.setReadPermissions("email", "public_profile");
+        facebookBtn.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                // App code
+                handleFacebookAccessToken(loginResult.getAccessToken());
+            }
+
+            @Override
+            public void onCancel() {
+                // App code
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                // App code
             }
         });
 
@@ -154,4 +201,46 @@ public class SSOSessionActivity extends AppCompatActivity {
         userLogged = currentUser;
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Pass the activity result back to the Facebook SDK
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void handleFacebookAccessToken(AccessToken token) {
+        Log.d(TAG, "handleFacebookAccessToken:" + token);
+
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithCredential:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            updateUI(user);
+
+
+                            SSOSessionActivity.userLogged = mAuth.getCurrentUser();
+
+                            facebookAuthentication = true;
+
+                            Intent home = new Intent(SSOSessionActivity.this, HomeActivity.class);
+
+                            startActivity(home);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            Toast.makeText(SSOSessionActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            updateUI(null);
+                        }
+                    }
+                });
+    }
 }

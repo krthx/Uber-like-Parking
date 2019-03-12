@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class HomeActivity extends AppCompatActivity  implements NavigationDrawerFragment.FragmentDrawerListener {
@@ -89,6 +90,11 @@ public class HomeActivity extends AppCompatActivity  implements NavigationDrawer
                 SSOSessionActivity.userLogged = null;
 
                 Intent login = new Intent(HomeActivity.this, SSOSessionActivity.class);
+
+                if(SSOSessionActivity.facebookAuthentication) {
+
+                    LoginManager.getInstance().logOut();
+                }
 
                 startActivity(login);
                 break;
