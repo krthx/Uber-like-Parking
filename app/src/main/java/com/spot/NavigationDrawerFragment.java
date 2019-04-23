@@ -25,8 +25,8 @@ public class NavigationDrawerFragment extends Fragment {
     private FragmentDrawerListener myDrawerListener;
     private View contenedor;
 
-    private int Iconos[] = { R.drawable.credit_card, R.drawable.history, R.drawable.question, R.drawable.logoff };
-    private String Titulos[] = {"Pagos", "Historial", "Ayuda", "Cerrar Sesión"};
+    private int Iconos[] = { R.drawable.credit_card, R.drawable.credit_card, R.drawable.history, R.drawable.question, R.drawable.logoff };
+    private String Titulos[] = {"Maps", "Pagos", "Historial", "Ayuda", "Cerrar Sesión"};
 
     private int picture = R.mipmap.ic_launcher;
 

@@ -33,4 +33,12 @@
     <string name="default_pass">ltsbrth</string>
     <string name="facebook_app_id">2078440735537900</string>
     <string name="fb_login_protocol_scheme">fb2078440735537900</string>
+    <string name="payment_title">Métodos de Pago</string>
+    <string name="add_payment_method">Agregar</string>
+    <string name="numero">Número</string>
+
+    <array name="tiposTarjetas">
+        <item>Visa</item>
+        <item>Master Card</item>
+    </array>
 </resources>

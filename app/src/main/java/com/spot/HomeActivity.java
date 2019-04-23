@@ -17,7 +17,6 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
@@ -48,12 +47,6 @@ public class HomeActivity extends AppCompatActivity  implements NavigationDrawer
         drawerFragment.setUp((DrawerLayout)findViewById(R.id.drawer_layout), mToolbar, R.id.navigation_drawer_fragmnet);
         drawerFragment.setDrawerListener(this);
 
-
-        /*Toast.makeText(this, "Has permissions ? " + hasPermissions(), Toast.LENGTH_SHORT).show();
-        if (!hasPermissions()){
-            requestPerms();
-        }*/
-
         onDrawerItemSelected(null, 1);
 
         if (Build.VERSION.SDK_INT >= 23) {
@@ -75,17 +68,17 @@ public class HomeActivity extends AppCompatActivity  implements NavigationDrawer
         switch (position){
             case 1:
                 fragment = new MapFragment();
-                title = "Paises";
                 break;
             case 2:
-                fragment = new HistoryFragment();
-                title ="Ayuda";
+                fragment = new ConfigFragment();
                 break;
             case 3:
-                fragment = new HelpFragment();
-                title ="Ayuda";
+                fragment = new HistoryFragment();
                 break;
             case 4:
+                fragment = new HelpFragment();
+                break;
+            case 5:
                 mAuth.signOut();
                 SSOSessionActivity.userLogged = null;
 
@@ -109,64 +102,8 @@ public class HomeActivity extends AppCompatActivity  implements NavigationDrawer
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.Contenedor, fragment);
             fragmentTransaction.commit();
-            //getSupportActionBar().setTitle(title);
         }
     }
-
-    /*public void checkPermissions() {
-        // Here, thisActivity is the current activity
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-            } else {
-
-                // No explanation needed, we can request the permission.
-
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        0);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-        }
-    }*/
-
-
-    private void requestPerms(){
-        String[] permissions = new String[]{ Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET };
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            requestPermissions(permissions, PERMS_REQUEST_CODE);
-        }
-    }
-
-    /*@SuppressLint("WrongConstant")
-    private boolean hasPermissions(){
-        int res = 0;
-        //string array of permissions,
-        String[] permissions = new String[]{ Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET };
-
-        for (String perms : permissions){
-            res = checkCallingOrSelfPermission(perms);
-
-            if (!(res == PackageManager.PERMISSION_GRANTED)){
-                return false;
-            }
-        }
-
-        return true;
-    }*/
 
     private static boolean hasPermissions(Context context, String... permissions) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {

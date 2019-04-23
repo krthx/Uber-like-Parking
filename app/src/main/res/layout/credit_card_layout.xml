@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/i1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:srcCompat="@drawable/ic_credit_card"
+        android:background="@color/colorAccent"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_marginBottom="30dp"/>
+
+    <EditText
+        android:id="@+id/txtPropietario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lines="1"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:fontFamily="@font/quicksand_regular"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:hint="@string/username"
+        android:textAlignment="center"
+        android:background="@drawable/border_radius"
+        android:textColor="@android:color/black"
+        android:padding="10dp"
+        android:layout_below="@id/i1"/>
+
+    <EditText
+        android:id="@+id/txtNumero"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lines="1"
+        android:ems="10"
+        android:inputType="number"
+        android:fontFamily="@font/quicksand_regular"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp"
+        android:hint="@string/numero"
+        android:textAlignment="center"
+        android:background="@drawable/border_radius"
+        android:textColor="@android:color/black"
+        android:padding="10dp"
+        android:layout_below="@id/txtPropietario" />
+
+    <EditText
+        android:id="@+id/txtFechaVencimiento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lines="1"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:fontFamily="@font/quicksand_regular"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:hint="@string/username"
+        android:textAlignment="center"
+        android:background="@drawable/border_radius"
+        android:textColor="@android:color/black"
+        android:padding="10dp"
+        android:layout_below="@id/txtNumero"/>
+
+    <EditText
+        android:id="@+id/txtCVV"
+        android:fontFamily="@font/quicksand_regular"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lines="1"
+        android:textAlignment="center"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:padding="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:inputType="number"
+        android:background="@drawable/border_radius"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_below="@id/txtFechaVencimiento" />
+
+    <Button
+        android:id="@+id/btnCrear"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/upload"
+        android:fontFamily="@font/quicksand_bold"
+        android:textSize="12sp"
+        android:ems="10"
+        android:padding="10dp"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:textAlignment="center"
+        android:background="@drawable/border_radius_green_color"
+        android:layout_below="@id/txtCVV" />
+</RelativeLayout>
