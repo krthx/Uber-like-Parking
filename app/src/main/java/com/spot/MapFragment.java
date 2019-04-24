@@ -1,24 +1,36 @@
 package com.spot;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MapFragment extends Fragment
         implements OnMapReadyCallback {
@@ -29,6 +41,14 @@ public class MapFragment extends Fragment
     private GoogleMap mGoogleMap;
     private MapView mapView;
     private View mView;
+    static Activity parent;
+
+
+    public static  MapFragment newInstance(Activity a) {
+        parent = a;
+
+        return new MapFragment();
+    }
 
     private static final LatLng GUATEMALA = new LatLng(14.594830, -90.483148);
     private LatLngBounds GUATEMALA_V2 = new LatLngBounds(
@@ -107,6 +127,60 @@ public class MapFragment extends Fragment
 
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(l));
 
+        mGoogleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+
+                LatLng customMarkerLocationOne = new LatLng(28.583911, 77.319116);
+                LatLng customMarkerLocationTwo = new LatLng(28.583078, 77.313744);
+                LatLng customMarkerLocationThree = new LatLng(28.580903, 77.317408);
+                LatLng customMarkerLocationFour = new LatLng(28.580108, 77.315271);
+                mGoogleMap.addMarker(new MarkerOptions().position(customMarkerLocationOne).
+                        icon(BitmapDescriptorFactory.fromBitmap(
+                                createCustomMarker(getActivity(), R.drawable.mandrish,"Manish")))).setTitle("iPragmatech Solutions Pvt Lmt");
+                mGoogleMap.addMarker(new MarkerOptions().position(customMarkerLocationTwo).
+                        icon(BitmapDescriptorFactory.fromBitmap(
+                                createCustomMarker(getActivity(), R.drawable.man,"Narender")))).setTitle("Hotel Nirulas Noida");
+
+                mGoogleMap.addMarker(new MarkerOptions().position(customMarkerLocationThree).
+                        icon(BitmapDescriptorFactory.fromBitmap(
+                                createCustomMarker(getActivity(), R.drawable.girl,"Neha")))).setTitle("Acha Khao Acha Khilao");
+                mGoogleMap.addMarker(new MarkerOptions().position(customMarkerLocationFour).
+                        icon(BitmapDescriptorFactory.fromBitmap(
+                                createCustomMarker(getActivity(), R.drawable.girl_two,"Nupur")))).setTitle("Subway Sector 16 Noida");
+
+                //LatLngBound will cover all your marker on Google Maps
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                builder.include(customMarkerLocationOne); //Taking Point A (First LatLng)
+                builder.include(customMarkerLocationThree); //Taking Point B (Second LatLng)
+                LatLngBounds bounds = builder.build();
+                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 200);
+                mGoogleMap.moveCamera(cu);
+                mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(14), 2000, null);
+            }
+        });
+    }
+
+    public static Bitmap createCustomMarker(Context context, @DrawableRes int resource, String _name) {
+
+        View marker = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.custom_marker, null);
+
+        CircleImageView markerImage = (CircleImageView) marker.findViewById(R.id.user_dp);
+        markerImage.setImageResource(resource);
+        TextView txt_name = (TextView)marker.findViewById(R.id.name);
+        txt_name.setText(_name);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        marker.setLayoutParams(new ViewGroup.LayoutParams(52, ViewGroup.LayoutParams.WRAP_CONTENT));
+        marker.measure(displayMetrics.widthPixels, displayMetrics.heightPixels);
+        marker.layout(0, 0, displayMetrics.widthPixels, displayMetrics.heightPixels);
+        marker.buildDrawingCache();
+        Bitmap bitmap = Bitmap.createBitmap(marker.getMeasuredWidth(), marker.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        marker.draw(canvas);
+
+        return bitmap;
     }
 
 

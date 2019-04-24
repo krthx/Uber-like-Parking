@@ -67,7 +67,7 @@ public class HomeActivity extends AppCompatActivity  implements NavigationDrawer
 
         switch (position){
             case 1:
-                fragment = new MapFragment();
+                fragment = MapFragment.newInstance(this);
                 break;
             case 2:
                 fragment = new ConfigFragment();
