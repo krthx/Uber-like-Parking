@@ -7,7 +7,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         tools:context=".SSOSessionActivity">
 
         <TextView
@@ -22,7 +22,6 @@
             android:textStyle="bold"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="25sp" />
-
 
         <LinearLayout
             android:layout_below="@id/titleFrag"
@@ -40,20 +39,20 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/payment_methods"
-            android:layout_below="@+id/icon_cont"
             android:scrollbars="vertical"
             android:layout_margin="10dp"
+            android:layout_below="@+id/icon_cont"
             android:padding="5dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="300dp"/>
 
         <Button
             android:id="@+id/agregarTarjeta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryDark"
+            android:background="@drawable/border_radius_primary_color"
             android:textColor="@android:color/white"
-            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/payment_methods"
             android:layout_marginTop="100dp"
             android:layout_margin="10dp"
             android:text="@string/add_payment_method"/>

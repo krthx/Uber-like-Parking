@@ -2,20 +2,37 @@ package com.spot;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.text.Html;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -29,19 +46,22 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MapFragment extends Fragment
         implements OnMapReadyCallback {
 
-    private static final String TAG = MapFragment.class.getSimpleName();
-
     private static final int REQUEST_CODE = 123;
     private GoogleMap mGoogleMap;
     private MapView mapView;
     private View mView;
     static Activity parent;
+    private TextView mPlaceDetailsText;
+    private TextView mPlaceAttribution;
+    private EditText mainSearchTextView;
 
 
     public static  MapFragment newInstance(Activity a) {
@@ -51,14 +71,23 @@ public class MapFragment extends Fragment
     }
 
     private static final LatLng GUATEMALA = new LatLng(14.594830, -90.483148);
-    private LatLngBounds GUATEMALA_V2 = new LatLngBounds(
-            new LatLng(14.594830, -90.483148), new LatLng(14.594830, -90.483148));
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_map, container, false);
+
+
+        Button openButton = mView.findViewById(R.id.btnSearch);
+        System.out.println("OpenButton" +openButton.getId());
+        openButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println(view.getId());
+                openAutocompleteActivity();
+            }
+        });
 
         return mView;
     }
@@ -67,14 +96,21 @@ public class MapFragment extends Fragment
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+// Initialize Places.
+        if (!Places.isInitialized())
+            Places.initialize(getContext(), getResources().getString(R.string.GOOGLE_MAPS_API_KEY));
+
+
+        PlacesClient placesClient = Places.createClient(getContext());
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        if (getActivity() != null) {
+        /*if (getActivity() != null) {
             SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager()
                     .findFragmentById(R.id.map);
             if (mapFragment != null) {
                 mapFragment.getMapAsync(this);
             }
-        }
+        }*/
     }
 
     @Override
@@ -88,10 +124,8 @@ public class MapFragment extends Fragment
             mapView.onResume();
             mapView.getMapAsync(this);
         }
-    }
 
-    private static final LatLng SYDNEY = new LatLng(-33.88, 151.21);
-    private static final LatLng MOUNTAIN_VIEW = new LatLng(37.4, -122.1);
+    }
 
 
     @Override
@@ -100,7 +134,7 @@ public class MapFragment extends Fragment
 
         mGoogleMap = googleMap;
 
-        googleMap.setMyLocationEnabled(false);
+        //googleMap.setMyLocationEnabled(false);
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         googleMap.getUiSettings().setCompassEnabled(false);
 
@@ -110,13 +144,11 @@ public class MapFragment extends Fragment
                             getContext(), R.raw.style_json));
 
             if (!success) {
-                Log.e(TAG, "Style parsing failed.");
+                //Log.e(TAG, "Style parsing failed.");
             }
         } catch (Resources.NotFoundException e) {
-            Log.e(TAG, "Can't find style. Error: ", e);
+            //Log.e(TAG, "Can't find style. Error: ", e);
         }
-
-        //googleMap.addMarker(new MarkerOptions().position(GUATEMALA));
 
         CameraPosition l = CameraPosition.builder()
                 .target(GUATEMALA)
@@ -131,25 +163,31 @@ public class MapFragment extends Fragment
             @Override
             public void onMapLoaded() {
 
-                LatLng customMarkerLocationOne = new LatLng(28.583911, 77.319116);
-                LatLng customMarkerLocationTwo = new LatLng(28.583078, 77.313744);
-                LatLng customMarkerLocationThree = new LatLng(28.580903, 77.317408);
-                LatLng customMarkerLocationFour = new LatLng(28.580108, 77.315271);
-                mGoogleMap.addMarker(new MarkerOptions().position(customMarkerLocationOne).
-                        icon(BitmapDescriptorFactory.fromBitmap(
-                                createCustomMarker(getActivity(), R.drawable.mandrish,"Manish")))).setTitle("iPragmatech Solutions Pvt Lmt");
+                LatLng customMarkerLocationOne = new LatLng(14.598848, -90.486804);
+                LatLng customMarkerLocationTwo = new LatLng(14.598521, -90.484368);
+                LatLng customMarkerLocationThree = new LatLng(14.599284, -90.486058);
+                LatLng customMarkerLocationFour = new LatLng(14.600447, -90.486219);
+                mGoogleMap.addMarker(new MarkerOptions()
+                        .position(customMarkerLocationOne)
+                        .icon(
+                                BitmapDescriptorFactory
+                                        .fromBitmap(
+                                                createCustomMarker(getActivity(), R.drawable.profile_parking,"Juan")
+                                        )
+                        )).setTitle("Parqueo 1");
+
                 mGoogleMap.addMarker(new MarkerOptions().position(customMarkerLocationTwo).
                         icon(BitmapDescriptorFactory.fromBitmap(
-                                createCustomMarker(getActivity(), R.drawable.man,"Narender")))).setTitle("Hotel Nirulas Noida");
+                                createCustomMarker(getActivity(), R.drawable.profile_parking,"Ramón")))).setTitle("Parqueo 2");
 
                 mGoogleMap.addMarker(new MarkerOptions().position(customMarkerLocationThree).
                         icon(BitmapDescriptorFactory.fromBitmap(
-                                createCustomMarker(getActivity(), R.drawable.girl,"Neha")))).setTitle("Acha Khao Acha Khilao");
+                                createCustomMarker(getActivity(), R.drawable.profile_parking,"María")))).setTitle("Parqueo 3");
                 mGoogleMap.addMarker(new MarkerOptions().position(customMarkerLocationFour).
                         icon(BitmapDescriptorFactory.fromBitmap(
-                                createCustomMarker(getActivity(), R.drawable.girl_two,"Nupur")))).setTitle("Subway Sector 16 Noida");
+                                createCustomMarker(getActivity(), R.drawable.profile_parking,"Marcela")))).setTitle("Parqueo 4");
 
-                //LatLngBound will cover all your marker on Google Maps
+                //LatLngBound will cover all your marker_blue on Google Maps
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
                 builder.include(customMarkerLocationOne); //Taking Point A (First LatLng)
                 builder.include(customMarkerLocationThree); //Taking Point B (Second LatLng)
@@ -184,7 +222,7 @@ public class MapFragment extends Fragment
     }
 
 
-    /*private static boolean hasPermissions(Context context, String... permissions) {
+    private static boolean hasPermissions(Context context, String... permissions) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
             for (String permission : permissions) {
                 if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
@@ -192,27 +230,85 @@ public class MapFragment extends Fragment
                 }
             }
         }
+
         return true;
-    }*/
-/*
-    @Override
-    public void onMapLoaded() {
-
-        LatLng customMarkerLocationOne = new LatLng(28.583911, 77.319116);
-        LatLng customMarkerLocationTwo = new LatLng(28.583078, 77.313744);
-        LatLng customMarkerLocationThree = new LatLng(28.580903, 77.317408);
-        LatLng customMarkerLocationFour = new LatLng(28.580108, 77.315271);
-
-        //LatLngBound will cover all your marker on Google Maps
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        builder.include(customMarkerLocationOne); //Taking Point A (First LatLng)
-        builder.include(customMarkerLocationThree); //Taking Point B (Second LatLng)
-        LatLngBounds bounds = builder.build();
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 200);
-
-        mMap.moveCamera(cu);
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(14), 2000, null);
     }
-}*/
-}
 
+    public static int REQUEST_CODE_AUTOCOMPLETE = 778;
+
+    private void openAutocompleteActivity() {
+        try {
+            Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                    .build(getActivity());
+            startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
+        } catch (GooglePlayServicesRepairableException e) {
+            System.out.println("Error " + e.getMessage());
+            GoogleApiAvailability.getInstance().getErrorDialog(getActivity(), e.getConnectionStatusCode(), 0 ).show();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            String message = "Google Play Services is not available: " +
+                    GoogleApiAvailability.getInstance().getErrorString(e.errorCode);
+
+            System.out.println("Error " + e.getMessage());
+
+            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Check that the result was from the autocomplete widget.
+        if (requestCode == REQUEST_CODE_AUTOCOMPLETE) {
+
+            System.out.println("ResultCode " + resultCode);
+
+
+            try {
+
+                // Get the user's selected place from the Intent.
+                Place place = PlaceAutocomplete.getPlace(getContext(), data);
+
+                /*mPlaceDetailsText.setText(formatPlaceDetails(getResources(), place.getName(),
+                        place.getId(), place.getAddress(), place.getPhoneNumber(),
+                        place.getWebsiteUri()));*/
+
+                System.out.println(place.getName() + " " + place.getId() + " " +  place.getAddress() + " " +  place.getPhoneNumber() + " " +
+                        place.getWebsiteUri());
+
+                /*CharSequence attributions = place.getAttributions();
+                if (!TextUtils.isEmpty(attributions)) {
+                    mPlaceAttribution.setText(Html.fromHtml(attributions.toString()));
+                } else {
+                    mPlaceAttribution.setText("");
+                }*/
+            }catch (Exception e) {}
+            /*if (resultCode == 2) {
+
+                try {
+
+                    // Get the user's selected place from the Intent.
+                    Place place = PlaceAutocomplete.getPlace(getContext(), data);
+
+                *//*mPlaceDetailsText.setText(formatPlaceDetails(getResources(), place.getName(),
+                        place.getId(), place.getAddress(), place.getPhoneNumber(),
+                        place.getWebsiteUri()));*//*
+
+                    System.out.println(place.getName() + " " + place.getId() + " " +  place.getAddress() + " " +  place.getPhoneNumber() + " " +
+                            place.getWebsiteUri());
+
+                *//*CharSequence attributions = place.getAttributions();
+                if (!TextUtils.isEmpty(attributions)) {
+                    mPlaceAttribution.setText(Html.fromHtml(attributions.toString()));
+                } else {
+                    mPlaceAttribution.setText("");
+                }*//*
+                }catch (Exception e) {}
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(getContext(), data);
+            } else if (resultCode == 1) {
+            }*/
+        }
+    }
+}

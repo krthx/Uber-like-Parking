@@ -5,18 +5,26 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.spot.R;
-import com.spot.custom.CustomDialogClass;
+import com.spot.adapters.CreditCardAdapter;
+import com.spot.custom.AlertMessage;
+import com.spot.custom.CreditCardDialog;
 import com.spot.models.CreditCard;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,9 +33,12 @@ import java.util.Map;
 public class ConfigFragment extends Fragment {
 
     private View mView;
-    private DatabaseReference mDatabase;
 
     private Button mCreateCard;
+    private DatabaseReference mDatabase;
+    private List<CreditCard> creditCards;
+    private RecyclerView mCreditCardList;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     public ConfigFragment() {
         // Required empty public constructor
@@ -41,42 +52,55 @@ public class ConfigFragment extends Fragment {
         mView = inflater.inflate(R.layout.fragment_config, container, false);
 
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-
-        //DatabaseReference myRef = mDatabase.getReference("message");
+        mDatabase = FirebaseDatabase.getInstance().getReference("cards/user-cards/" + SSOSessionActivity.userLogged.getUid() );
 
         mCreateCard = mView.findViewById(R.id.agregarTarjeta);
         mCreateCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                Fragment prev = getFragmentManager().findFragmentByTag("dialog");
-                if (prev != null)
-                    ft.remove(prev);
 
-
-                ft.addToBackStack(null);
-                DialogFragment dialogFragment = new CustomDialogClass();
-
-                dialogFragment.show(ft, "dialog");
+                CreditCardDialog dialog = new CreditCardDialog(getContext());
+                dialog.show();
             }
         });
 
+        creditCards = new ArrayList<>();
+
+        mCreditCardList = mView.findViewById(R.id.payment_methods);
+
+        mCreditCardList.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mCreditCardList.setLayoutManager(mLayoutManager);
+
+
+        final CreditCardAdapter adapter = new CreditCardAdapter(creditCards);
+
+        mCreditCardList.setAdapter(adapter);
+
+
+        mDatabase.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
+                CreditCard newCard = dataSnapshot.getValue(CreditCard.class);
+
+                adapter.addCard(newCard);
+                System.out.println("CreditNum: " + newCard.numero);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String prevChildKey) {}
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {}
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String prevChildKey) {}
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+
         return mView;
-    }
-
-    private void writeNewPost(String userId, String propietario, String numero, String fechaVencimiento, String cvv) {
-        // Create new post at /user-posts/$userid/$postid and at
-        // /posts/$postid simultaneously
-        String key = mDatabase.child("cards").push().getKey();
-        CreditCard card = new CreditCard(userId, propietario, numero, fechaVencimiento, cvv);
-        Map<String, Object> creditCardValues = card.toMap();
-
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/cards/" + key, creditCardValues);
-        childUpdates.put("/user-cards/" + userId + "/" + key, creditCardValues);
-
-        mDatabase.updateChildren(childUpdates);
     }
 
 }

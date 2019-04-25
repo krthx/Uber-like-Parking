@@ -95,7 +95,7 @@
             android:layout_marginEnd="10dp"
             android:layout_below="@id/password"
             android:textAlignment="center"
-            android:background="@drawable/border_radius_primary_color"/>
+            android:background="@drawable/border_radius_accent_color"/>
 
         <TextView
             android:id="@+id/titleSignUp"

@@ -50,7 +50,7 @@ public class SSOSessionActivity extends AppCompatActivity {
     TextView titleSignUp;
 
     private FirebaseAuth mAuth;
-    static FirebaseUser userLogged;
+    public static FirebaseUser userLogged;
     static boolean facebookAuthentication = false;
 
     GoogleSignInClient mGoogleSignInClient;
