@@ -30,7 +30,6 @@ import android.widget.Toast;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.CameraUpdate;
@@ -39,15 +38,23 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.spot.layout.MapWrapperLayout;
+import com.spot.listeners.OnInfoWindowElemTouchListener;
+import com.spot.models.CreditCard;
+import com.spot.models.Parking;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -59,10 +66,6 @@ public class MapFragment extends Fragment
     private MapView mapView;
     private View mView;
     static Activity parent;
-    private TextView mPlaceDetailsText;
-    private TextView mPlaceAttribution;
-    private EditText mainSearchTextView;
-
 
     public static  MapFragment newInstance(Activity a) {
         parent = a;
@@ -96,28 +99,16 @@ public class MapFragment extends Fragment
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-// Initialize Places.
         if (!Places.isInitialized())
             Places.initialize(getContext(), getResources().getString(R.string.GOOGLE_MAPS_API_KEY));
 
-
-        PlacesClient placesClient = Places.createClient(getContext());
-
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        /*if (getActivity() != null) {
-            SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager()
-                    .findFragmentById(R.id.map);
-            if (mapFragment != null) {
-                mapFragment.getMapAsync(this);
-            }
-        }*/
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle bundleConfig) {
         super.onViewCreated(view, bundleConfig);
 
-        mapView = (MapView) mView.findViewById(R.id.map);
+        mapView =  mView.findViewById(R.id.map);
 
         if (mapView != null) {
             mapView.onCreate(null);
@@ -127,6 +118,13 @@ public class MapFragment extends Fragment
 
     }
 
+    private ViewGroup infoWindow;
+    private TextView infoTitle;
+    private TextView infoSnippet;
+    private Button infoButton;
+    private OnInfoWindowElemTouchListener infoButtonListener;
+
+    private DatabaseReference mDatabase;
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -144,10 +142,8 @@ public class MapFragment extends Fragment
                             getContext(), R.raw.style_json));
 
             if (!success) {
-                //Log.e(TAG, "Style parsing failed.");
             }
         } catch (Resources.NotFoundException e) {
-            //Log.e(TAG, "Can't find style. Error: ", e);
         }
 
         CameraPosition l = CameraPosition.builder()
@@ -159,44 +155,161 @@ public class MapFragment extends Fragment
 
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(l));
 
+
+
+
+
+        final MapWrapperLayout mapWrapperLayout = mView.findViewById(R.id.map_relative_layout);
+        mapWrapperLayout.init(mGoogleMap, getPixelsFromDp(getContext(), 39 + 20));
+
+
+        this.infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.info_window, null);
+        this.infoTitle = infoWindow.findViewById(R.id.title);
+        this.infoSnippet = infoWindow.findViewById(R.id.snippet);
+        this.infoButton = infoWindow.findViewById(R.id.button);
+
+        this.infoButtonListener = new OnInfoWindowElemTouchListener(infoButton,
+                getResources().getDrawable(R.drawable.fail),
+                getResources().getDrawable(R.drawable.history))
+        {
+            @Override
+            protected void onClickConfirmed(View v, Marker marker) {
+                Parking p = (Parking) marker.getTag();
+
+                Toast.makeText(getContext(), p.uid, Toast.LENGTH_SHORT).show();
+
+
+                Intent prof = new Intent(getContext(), ProfileActivity.class);
+
+                startActivity(prof);
+
+            }
+        };
+
+        this.infoButton.setOnTouchListener(infoButtonListener);
+
+
+        mGoogleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                infoTitle.setText(marker.getTitle());
+                infoSnippet.setText(marker.getSnippet());
+                infoButtonListener.setMarker(marker);
+
+                mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
+
+                return infoWindow;
+            }
+        });
+
+
+
+
+
+
+
         mGoogleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
 
-                LatLng customMarkerLocationOne = new LatLng(14.598848, -90.486804);
+
+                mDatabase = FirebaseDatabase.getInstance().getReference("parking/parking-profiles//" );
+
+
+                mDatabase.addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
+                        Parking newParking = dataSnapshot.getValue(Parking.class);
+
+                        ///adapter.addCard(newCard);
+                        LatLng customMarkerLocationOne = new LatLng(Double.parseDouble(newParking.longitude), Double.parseDouble(newParking.latitude));
+
+                        System.out.println("Parking: " + newParking.owner);
+                        MarkerOptions opt = new MarkerOptions()
+                                .position(customMarkerLocationOne)
+                                .snippet(newParking.uid)
+                                .title(newParking.title)
+                                .icon(BitmapDescriptorFactory.fromBitmap(
+                                        createCustomMarker(getActivity(), R.drawable.profile_parking, newParking.owner)
+                                ));
+
+                        Marker m = mGoogleMap.addMarker(opt);
+                        m.setTag(newParking);
+
+                        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                        builder.include(GUATEMALA); //Taking Point A (First LatLng)
+                        builder.include(GUATEMALA); //Taking Point B (Second LatLng)
+                        LatLngBounds bounds = builder.build();
+                        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 200);
+                        mGoogleMap.moveCamera(cu);
+                        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(17), 2000, null);
+
+                    }
+
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String prevChildKey) {}
+
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {}
+
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String prevChildKey) {}
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {}
+                });
+
+                /*LatLng customMarkerLocationOne = new LatLng(14.598848, -90.486804);
                 LatLng customMarkerLocationTwo = new LatLng(14.598521, -90.484368);
                 LatLng customMarkerLocationThree = new LatLng(14.599284, -90.486058);
-                LatLng customMarkerLocationFour = new LatLng(14.600447, -90.486219);
-                mGoogleMap.addMarker(new MarkerOptions()
+                LatLng customMarkerLocationFour = new LatLng(14.600447, -90.486219);*/
+                /*mGoogleMap.addMarker(new MarkerOptions()
                         .position(customMarkerLocationOne)
                         .icon(
                                 BitmapDescriptorFactory
                                         .fromBitmap(
                                                 createCustomMarker(getActivity(), R.drawable.profile_parking,"Juan")
                                         )
-                        )).setTitle("Parqueo 1");
+                        )).setTitle("Parqueo 1");*/
 
-                mGoogleMap.addMarker(new MarkerOptions().position(customMarkerLocationTwo).
+                /*MarkerOptions opt = new MarkerOptions()
+                        .position(customMarkerLocationTwo).
                         icon(BitmapDescriptorFactory.fromBitmap(
-                                createCustomMarker(getActivity(), R.drawable.profile_parking,"Ramón")))).setTitle("Parqueo 2");
+                                createCustomMarker(getActivity(), R.drawable.profile_parking,"Ramón"))
+                        )
+                        .snippet("Id")
+                        .title("Parqueo 2");
 
-                mGoogleMap.addMarker(new MarkerOptions().position(customMarkerLocationThree).
+
+                Parking p = new Parking();
+                p.uid = "ASDASDF";
+
+                Marker m = mGoogleMap.addMarker(opt);
+                m.setTag(p);
+*/
+                /*mGoogleMap.addMarker(new MarkerOptions().position(customMarkerLocationThree).
                         icon(BitmapDescriptorFactory.fromBitmap(
                                 createCustomMarker(getActivity(), R.drawable.profile_parking,"María")))).setTitle("Parqueo 3");
                 mGoogleMap.addMarker(new MarkerOptions().position(customMarkerLocationFour).
                         icon(BitmapDescriptorFactory.fromBitmap(
-                                createCustomMarker(getActivity(), R.drawable.profile_parking,"Marcela")))).setTitle("Parqueo 4");
+                                createCustomMarker(getActivity(), R.drawable.profile_parking,"Marcela")))).setTitle("Parqueo 4");*/
 
                 //LatLngBound will cover all your marker_blue on Google Maps
-                LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                builder.include(customMarkerLocationOne); //Taking Point A (First LatLng)
-                builder.include(customMarkerLocationThree); //Taking Point B (Second LatLng)
-                LatLngBounds bounds = builder.build();
-                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 200);
-                mGoogleMap.moveCamera(cu);
-                mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(14), 2000, null);
+
             }
         });
+    }
+
+
+
+    public static int getPixelsFromDp(Context context, float dp) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int)(dp * scale + 0.5f);
     }
 
     public static Bitmap createCustomMarker(Context context, @DrawableRes int resource, String _name) {

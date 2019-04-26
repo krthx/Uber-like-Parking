@@ -36,6 +36,13 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.spot.models.CreditCard;
+import com.spot.models.Parking;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SSOSessionActivity extends AppCompatActivity {
 
@@ -152,17 +159,10 @@ public class SSOSessionActivity extends AppCompatActivity {
         googleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //signIn();
-
-                //Intent signin = new Intent(SSOSessionActivity.this, SigInActivity.class);
-
-                //startActivity(signin);
-
                 signIn();
 
                 user.setText("");
                 password.setText("");
-                //finish();
 
             }
         });
@@ -179,6 +179,12 @@ public class SSOSessionActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        if(!true) {
+            writeParkingProfiles("Juan Mansilla", "59368745", "12", "14.598848", "-90.486804", "20");
+            writeParkingProfiles("Pedro Lopez", "43368725", "profile", "14.598521", "-90.484368", "25");
+            writeParkingProfiles("María Pereira", "58996745", "sdfasd", "14.599284", "-90.486058", "30");
+        }
     }
 
     private void signIn() {
@@ -268,4 +274,22 @@ public class SSOSessionActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    private void writeParkingProfiles(String owner, String phone, String url, String longitude, String latitude, String costPerHour) {
+
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("parking");
+        String key = mDatabase.child("parking").push().getKey();
+
+
+        //tring uid, String owner, String phone, String url, String longitude, String latitude, String costPerHour
+        Parking parking = new Parking(key, owner, phone, url, longitude, latitude, costPerHour);
+        Map<String, Object> parkingValues = parking.toMap();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/parking-profiles/" + key, parkingValues);
+
+        mDatabase.updateChildren(childUpdates);
+
+    }
+
 }
