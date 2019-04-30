@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_below="@id/titleFrag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:background="@color/green"
+        android:orientation="vertical"
+        android:paddingTop="8dp"
+        android:id="@+id/i1">
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="-25dp"
+            android:src="@drawable/ic_reserved"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:fontFamily="@font/quicksand_regular"
+            android:text="@string/enterReservationData"
+            android:textStyle="bold"
+            android:layout_marginTop="-15dp"
+            android:layout_marginBottom="10dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/i1"
+        android:id="@+id/il2"
+        android:padding="8dp"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:text="@string/available"/>
+
+        <com.spot.custom.MultiSpinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/multi_spinner" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/il2"
+        android:padding="8dp">
+        <Button
+            android:id="@+id/btnCrearBooking"
+            android:layout_weight="1"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="@string/add"
+            android:fontFamily="@font/quicksand_bold"
+            android:textSize="12sp"
+            android:ems="10"
+            android:padding="10dp"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:textAlignment="center"
+            android:background="@drawable/border_radius_green_color" />
+
+
+        <Button
+            android:id="@+id/btnCancelarBooking"
+            android:layout_weight="1"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"
+            android:fontFamily="@font/quicksand_bold"
+            android:textSize="12sp"
+            android:ems="10"
+            android:padding="10dp"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:textAlignment="center"
+            android:background="@drawable/border_radius_accent_color" />
+    </LinearLayout>
+</RelativeLayout>

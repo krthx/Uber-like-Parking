@@ -50,9 +50,74 @@
     <string name="intro_message">Buscar ubicación</string>
     <string name="place_details">&lt;b&gt;%1$s&lt;/b&gt;&lt;br/&gt;&lt;i&gt;Place Id: %2$s&lt;/i&gt;&lt;br/&gt;Address: %3$s&lt;br/&gt;Phone: %4$s&lt;br/&gt;Website: %5$s</string>
     <string name="open_activity">Buscar</string>
+    <string name="reservar">Reservar</string>
+    <string name="cost_per_hour">Costo por hora:</string>
+    <string name="owner1">Propietario:</string>
+    <string name="number">Contacto:</string>
+    <string name="back">Regresar</string>
+    <string name="available">Horarios</string>
+    <string name="no_available">No disponible</string>
+    <string name="still_available">Disponible</string>
+    <string name="sch1">00:00 a.m - 01:00 a.m.</string>
+    <string name="sch2">01:00 a.m - 02:00 a.m.</string>
+    <string name="sch3">02:00 a.m - 03:00 a.m.</string>
+    <string name="sch4">03:00 a.m - 04:00 a.m.</string>
+    <string name="sch5">04:00 a.m - 05:00 a.m.</string>
+    <string name="sch6">05:00 a.m - 06:00 a.m.</string>
+    <string name="sch7">06:00 a.m - 07:00 a.m.</string>
+    <string name="sch8">07:00 a.m - 08:00 a.m.</string>
+    <string name="sch9">08:00 a.m - 09:00 a.m.</string>
+    <string name="sch10">09:00 a.m - 10:00 a.m.</string>
+    <string name="sch11">10:00 a.m - 11:00 a.m.</string>
+    <string name="sch12">11:00 a.m - 12:00 p.m.</string>
+    <string name="sch13">12:00 p.m - 13:00 p.m.</string>
+    <string name="sch14">13:00 p.m - 14:00 p.m.</string>
+    <string name="sch15">14:00 p.m - 15:00 p.m.</string>
+    <string name="sch16">15:00 p.m - 16:00 p.m.</string>
+    <string name="sch17">16:00 p.m - 17:00 p.m.</string>
+    <string name="sch18">17:00 p.m - 18:00 p.m.</string>
+    <string name="sch19">18:00 p.m - 19:00 p.m.</string>
+    <string name="sch20">19:00 p.m - 20:00 p.m.</string>
+    <string name="sch21">20:00 p.m - 21:00 p.m.</string>
+    <string name="sch22">21:00 p.m - 22:00 p.m.</string>
+    <string name="sch23">22:00 p.m - 23:00 p.m.</string>
+    <string name="sch24">23:00 p.m - 00:00 a.m.</string>
+    <string name="see_comments">Ver Comentarios</string>
+    <string name="busy">Reservado</string>
+    <string name="sch_all">Seleccione elementos</string>
+    <string name="enterReservationData">Ingrese datos de reservación</string>
 
     <array name="tiposTarjetas">
         <item>Visa</item>
         <item>Master Card</item>
     </array>
+
+
+
+    <string-array name="schs">
+        <item>00:00 a.m - 01:00 a.m.</item>
+        <item>01:00 a.m - 02:00 a.m.</item>
+        <item>02:00 a.m - 03:00 a.m.</item>
+        <item>03:00 a.m - 04:00 a.m.</item>
+        <item>04:00 a.m - 05:00 a.m.</item>
+        <item>05:00 a.m - 06:00 a.m.</item>
+        <item>06:00 a.m - 07:00 a.m.</item>
+        <item>07:00 a.m - 08:00 a.m.</item>
+        <item>08:00 a.m - 09:00 a.m.</item>
+        <item>09:00 a.m - 10:00 a.m.</item>
+        <item>10:00 a.m - 11:00 a.m.</item>
+        <item>11:00 a.m - 12:00 p.m.</item>
+        <item>12:00 p.m - 13:00 p.m.</item>
+        <item>13:00 p.m - 14:00 p.m.</item>
+        <item>14:00 p.m - 15:00 p.m.</item>
+        <item>15:00 p.m - 16:00 p.m.</item>
+        <item>16:00 p.m - 17:00 p.m.</item>
+        <item>17:00 p.m - 18:00 p.m.</item>
+        <item>18:00 p.m - 19:00 p.m.</item>
+        <item>19:00 p.m - 20:00 p.m.</item>
+        <item>20:00 p.m - 21:00 p.m.</item>
+        <item>21:00 p.m - 22:00 p.m.</item>
+        <item>22:00 p.m - 23:00 p.m.</item>
+        <item>23:00 p.m - 00:00 a.m.</item>
+    </string-array>
 </resources>

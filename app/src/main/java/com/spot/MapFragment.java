@@ -53,7 +53,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.spot.layout.MapWrapperLayout;
 import com.spot.listeners.OnInfoWindowElemTouchListener;
-import com.spot.models.CreditCard;
 import com.spot.models.Parking;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -178,11 +177,10 @@ public class MapFragment extends Fragment
 
                 Toast.makeText(getContext(), p.uid, Toast.LENGTH_SHORT).show();
 
-
                 Intent prof = new Intent(getContext(), ProfileActivity.class);
+                prof.putExtra("id-profile", p.uid);
 
                 startActivity(prof);
-
             }
         };
 
@@ -197,8 +195,10 @@ public class MapFragment extends Fragment
 
             @Override
             public View getInfoContents(Marker marker) {
+                Parking p = (Parking) marker.getTag();
+
                 infoTitle.setText(marker.getTitle());
-                infoSnippet.setText(marker.getSnippet());
+                infoSnippet.setText("Q." + p.costPerHour + " /por hora");
                 infoButtonListener.setMarker(marker);
 
                 mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
@@ -227,7 +227,7 @@ public class MapFragment extends Fragment
                         Parking newParking = dataSnapshot.getValue(Parking.class);
 
                         ///adapter.addCard(newCard);
-                        LatLng customMarkerLocationOne = new LatLng(Double.parseDouble(newParking.longitude), Double.parseDouble(newParking.latitude));
+                        LatLng customMarkerLocationOne = new LatLng(newParking.longitude, newParking.latitude);
 
                         System.out.println("Parking: " + newParking.owner);
                         MarkerOptions opt = new MarkerOptions()

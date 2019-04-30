@@ -40,7 +40,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.spot.models.CreditCard;
 import com.spot.models.Parking;
+import com.spot.models.Reserva;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -181,9 +183,23 @@ public class SSOSessionActivity extends AppCompatActivity {
         });
 
         if(!true) {
-            writeParkingProfiles("Juan Mansilla", "59368745", "12", "14.598848", "-90.486804", "20");
-            writeParkingProfiles("Pedro Lopez", "43368725", "profile", "14.598521", "-90.484368", "25");
-            writeParkingProfiles("María Pereira", "58996745", "sdfasd", "14.599284", "-90.486058", "30");
+            writeParkingProfiles("P1", "Juan Mansilla", "59368745", "12", 14.598848, -90.486804, "20", "07:00 a.m. - 18:00 p.m.");
+            writeParkingProfiles("P2", "Pedro Lopez", "43368725", "profile", 14.598521, -90.484368, "25", "00:00 a.m. - 20:00 p.m.");
+            writeParkingProfiles("P3", "María Pereira", "58996745", "sdfasd", 14.599284, -90.486058, "30", "08:00 a.m. - 12:00 p.m.");
+        }
+
+        if(!true) {
+
+            Calendar cn = Calendar.getInstance();
+            cn.set(Calendar.HOUR, 0);
+            cn.set(Calendar.MINUTE, 0);
+            cn.set(Calendar.SECOND, 0);
+            cn.set(Calendar.MILLISECOND, 0);
+
+            writeBooking("-Ldg6WYY8WaNr68BNN0o", cn.getTimeInMillis(), "09:00", "10:00");
+           /* writeBooking("-Ldg6WYY8WaNr68BNN0o", cn.getTimeInMillis(), "22:00", "23:00");
+            writeBooking("-Ldg6WYu0YyZudsx4h0Q", cn.getTimeInMillis(), "11:00", "15:00");
+            writeBooking("-Ldg6WYu0YyZudsx4h0Q", cn.getTimeInMillis(), "17:00", "23:00");*/
         }
     }
 
@@ -275,14 +291,14 @@ public class SSOSessionActivity extends AppCompatActivity {
                 });
     }
 
-    private void writeParkingProfiles(String owner, String phone, String url, String longitude, String latitude, String costPerHour) {
+    private void writeParkingProfiles(String title, String owner, String phone, String url, double longitude, double latitude, String costPerHour, String availability) {
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("parking");
         String key = mDatabase.child("parking").push().getKey();
 
 
         //tring uid, String owner, String phone, String url, String longitude, String latitude, String costPerHour
-        Parking parking = new Parking(key, owner, phone, url, longitude, latitude, costPerHour);
+        Parking parking = new Parking(key, title, owner, phone, url, longitude, latitude, costPerHour, availability);
         Map<String, Object> parkingValues = parking.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
@@ -291,5 +307,22 @@ public class SSOSessionActivity extends AppCompatActivity {
         mDatabase.updateChildren(childUpdates);
 
     }
+
+
+    private void writeBooking(String parking, long today, String startDate, String endDate) {
+
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("booking");
+        String key = mDatabase.child("booking").push().getKey();
+
+        Reserva newParking = new Reserva(key, parking, SSOSessionActivity.userLogged.getUid(), today, endDate, startDate);
+        Map<String, Object> parkingValues = newParking.toMap();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/" + key , parkingValues);
+
+        mDatabase.updateChildren(childUpdates);
+
+    }
+
 
 }

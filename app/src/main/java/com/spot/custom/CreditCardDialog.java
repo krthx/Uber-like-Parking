@@ -8,6 +8,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -66,11 +67,17 @@ public class CreditCardDialog extends Dialog implements android.view.View.OnClic
 
         if (element == R.id.btnCrear){
             System.out.println(SSOSessionActivity.userLogged.getUid());
-            writeNewPost(SSOSessionActivity.userLogged.getUid(), txtPropietario.getText().toString(),
-                    txtNumero.getText().toString(), txtFechaVencimiento.getText().toString(),
-                    txtCVV.getText().toString());
 
-            dismiss();
+            if(txtPropietario.getText() != null && txtNumero.getText() != null && txtFechaVencimiento.getText() != null && txtCVV.getText() != null) {
+
+                writeNewPost(SSOSessionActivity.userLogged.getUid(), txtPropietario.getText().toString(),
+                        txtNumero.getText().toString(), txtFechaVencimiento.getText().toString(),
+                        txtCVV.getText().toString());
+
+                dismiss();
+            }else {
+                Toast.makeText(getContext(), "Debe ingresar todos los datos solicitados", Toast.LENGTH_SHORT).show();
+            }
         }else if(element == R.id.btnCancelar) {
             dismiss();
         }

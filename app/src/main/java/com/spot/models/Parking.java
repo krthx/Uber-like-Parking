@@ -20,34 +20,39 @@ public class Parking {
     public String owner;
     public String phone;
     public String url;
-    public String longitude;
-    public String latitude;
+    public double longitude;
+    public double latitude;
     public String costPerHour;
+    public String availability;
 
     public Parking() {
         // Default constructor required for calls to DataSnapshot.getValue(Post.class)
     }
 
-    public Parking(String uid, String owner, String phone, String url, String longitude, String latitude, String costPerHour) {
+    public Parking(String uid, String title, String owner, String phone, String url, double longitude, double latitude, String costPerHour, String availability) {
         this.uid = uid;
+        this.title = title;
         this.owner = owner;
         this.phone = phone;
         this.url = url;
         this.longitude = longitude;
         this.latitude = latitude;
         this.costPerHour = costPerHour;
+        this.availability = availability;
     }
 
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("uid", uid);
+        result.put("title", title);
         result.put("owner", owner);
         result.put("phone", phone);
         result.put("url", url);
         result.put("longitude", longitude);
         result.put("latitude", latitude);
         result.put("costPerHour", costPerHour);
+        result.put("availability", availability);
 
         return result;
     }

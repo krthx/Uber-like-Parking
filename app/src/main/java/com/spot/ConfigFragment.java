@@ -84,7 +84,6 @@ public class ConfigFragment extends Fragment {
                 CreditCard newCard = dataSnapshot.getValue(CreditCard.class);
 
                 adapter.addCard(newCard);
-                System.out.println("CreditNum: " + newCard.numero);
             }
 
             @Override
